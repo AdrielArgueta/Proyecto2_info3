@@ -288,22 +288,34 @@ public class AFN{
             // Modo evaluación con AFN
             AFN automata = new AFN(args[0]);
             BufferedReader lector = new BufferedReader(new InputStreamReader(System.in));
+            System.out.print("Bievenidos a nuestro programa :D");
+            System.out.print("Ingresa las cuerdas que quieres validar en tu AFN.");
             System.out.println("Ingrese cuerdas (ENTER vacío para salir):");
-    
+
             while (true) {
                 System.out.print("> ");
                 String linea = lector.readLine();
                 if (linea == null || linea.isEmpty()) break;
-    
+                
                 boolean aceptada = automata.accept(linea);
                 System.out.println(aceptada ? "ACEPTADA" : "RECHAZADA");
             }
+            System.out.print("Gracias por usar nuestro programa :D");
+            System.out.print("--------------------------------------------------");
+            System.out.print("Creadores:");
+            System.out.print("  Adriel Levi Argueta Caal - 24003171");
+            System.out.print("  Maria Claudia Lainfiesta Herrera - 24000149");
+            System.out.print("  Jeancarlo de León - 24002596");
     
         } else if (args.length == 3 && args[1].equals("-to-afd")) {
-            // Modo conversión AFN → AFD
             AFN automata = new AFN(args[0]);
+            String ruta = args[0]; // ejemplo: "/pruebas/afn/nombre.afn" o "nombre.afn"
+            int punto = ruta.lastIndexOf('.');
+            int barra = ruta.lastIndexOf('/');
+
+            String nombre = ruta.substring(barra + 1, punto);
             automata.toAFD(args[2]);
-            automata.escribirAFD("Prueba2","pruebas/afd");
+            automata.escribirAFD(nombre,args[2]);
             System.out.println("AFD generado exitosamente en: " + args[2]);
     
         } else {

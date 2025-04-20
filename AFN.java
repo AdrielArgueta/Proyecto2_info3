@@ -1,10 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-/**
- * Clase para representar un AFN y convertirlo a AFD.
- * NO debe cambiar los nombres de la clase ni de los métodos existentes.
- */
 public class AFN{
     // Lectura AFN.
     private String direccionAFN;
@@ -271,57 +267,102 @@ public class AFN{
                 writer.newLine();
             }
     
-            System.out.println("AFD exportado correctamente en: " + archivo.getAbsolutePath());
+            System.out.println("AFD exportado correctamente en: ");
+            System.out.println(archivo.getAbsolutePath());
     
         } catch (IOException e) {
-            System.err.println("Error al escribir AFD en archivo: " + e.getMessage());
+            System.out.println("Error al escribir AFD en archivo: " + e.getMessage());
         }
     }
-    
-    
-    
-    
-
-
     public static void main(String[] args) throws IOException {
         if (args.length == 1) {
-            // Modo evaluación con AFN
             AFN automata = new AFN(args[0]);
             BufferedReader lector = new BufferedReader(new InputStreamReader(System.in));
-            System.out.print("Bievenidos a nuestro programa :D");
-            System.out.print("Ingresa las cuerdas que quieres validar en tu AFN.");
-            System.out.println("Ingrese cuerdas (ENTER vacío para salir):");
-
+            System.out.println();
+            System.out.println("=======================================================================================");
+            System.out.println("                 BIENVENIDO A NUESTRO PROYECTO NO.2 DE INFORMATICA 3 :D");
+            System.out.println("=======================================================================================");
+            System.out.println("Ingresa las cuerdas que quieres validar en tu AFN (presiona ENTER vacío para salir):");
+            System.out.println();
+            
             while (true) {
-                System.out.print("> ");
+                System.out.print("~ ");
                 String linea = lector.readLine();
                 if (linea == null || linea.isEmpty()) break;
                 
                 boolean aceptada = automata.accept(linea);
-                System.out.println(aceptada ? "ACEPTADA" : "RECHAZADA");
+                System.out.println(aceptada ? "La cuerda \""+ linea +"\" es ACEPTADA" : "La cuerda \""+ linea +"\" es RECHAZADA");
             }
-            System.out.print("Gracias por usar nuestro programa :D");
-            System.out.print("--------------------------------------------------");
-            System.out.print("Creadores:");
-            System.out.print("  Adriel Levi Argueta Caal - 24003171");
-            System.out.print("  Maria Claudia Lainfiesta Herrera - 24000149");
-            System.out.print("  Jeancarlo de León - 24002596");
-    
+            
+            System.out.println();
+            System.out.println("Terminando programa...");
+            System.out.println("Gracias por usar nuestro programa :D");
+            System.out.println();
+            System.out.println("=======================================================================================");
+            System.out.println();
+            System.out.println("CREDITOS:");
+            System.out.println();
+            System.out.println("Programa desarrollado por:");
+            System.out.println();
+            System.out.println("  Adriel Levi Argueta Caal         - 24003171");
+            System.out.println("  Maria Claudia Lainfiesta Herrera - 24000149");
+            System.out.println("  Jeancarlo de León                - 24002596");
+            System.out.println();
+            System.out.println("=======================================================================================");            
         } else if (args.length == 3 && args[1].equals("-to-afd")) {
+            System.out.println();
+            System.out.println("=======================================================================================");
+            System.out.println("                 BIENVENIDO A NUESTRO PROYECTO NO.2 DE INFORMATICA 3 :D");
+            System.out.println("=======================================================================================");
+            System.out.println();
             AFN automata = new AFN(args[0]);
-            String ruta = args[0]; // ejemplo: "/pruebas/afn/nombre.afn" o "nombre.afn"
+            String ruta = args[0];
             int punto = ruta.lastIndexOf('.');
             int barra = ruta.lastIndexOf('/');
 
             String nombre = ruta.substring(barra + 1, punto);
             automata.toAFD(args[2]);
             automata.escribirAFD(nombre,args[2]);
-            System.out.println("AFD generado exitosamente en: " + args[2]);
+            System.out.println();
+            System.out.println("Gracias por usar nuestro programa :D");
+            System.out.println();
+            System.out.println("=======================================================================================");
+            System.out.println();
+            System.out.println("CREDITOS:");
+            System.out.println();
+            System.out.println("Programa desarrollado por:");
+            System.out.println();
+            System.out.println("  Adriel Levi Argueta Caal         - 24003171");
+            System.out.println("  Maria Claudia Lainfiesta Herrera - 24000149");
+            System.out.println("  Jeancarlo de León                - 24002596");
+            System.out.println();
+            System.out.println("======================================================================================="); 
     
         } else {
-            System.out.println("Uso:");
-            System.out.println("  java AFN archivo.afn                 # Evaluar cuerdas");
-            System.out.println("  java AFN archivo.afn -to-afd salida.afd   # Convertir a AFD");
+            System.out.println("-------------------------------------------");
+            System.out.println(" OPCIONES DE USO");
+            System.out.println("-------------------------------------------");
+            System.out.println();
+            System.out.println("1. VALIDAR CADENAS CON UN ARCHIVO .afn");
+            System.out.println("-------------------------------------------");
+            System.out.println("Comando:");
+            System.out.println("  java AFN path/archivo.afn");
+            System.out.println();
+            System.out.println("Descripción:");
+            System.out.println("  Proporciona la ruta completa del archivo .afn que deseas utilizar.");
+            System.out.println("  El programa te permitirá ingresar cuerdas para verificar si son aceptadas por el AFN.");
+            System.out.println("  Para salir, presiona ENTER sin escribir ninguna cuerda.");
+            System.out.println();
+            System.out.println("2. CONVERTIR UN ARCHIVO .afn A .afd");
+            System.out.println("-------------------------------------------");
+            System.out.println("Comando:");
+            System.out.println("  java AFN path/archivo.afn -to-afd path/");
+            System.out.println();
+            System.out.println("Descripción:");
+            System.out.println("  Proporciona la ruta completa del archivo .afn de entrada.");
+            System.out.println("  Luego, indica solamente la carpeta de destino para guardar el archivo .afd.");
+            System.out.println("  RECUERDA: El archivo .afd tendrá el mismo nombre que el archivo .afn original.");
+            System.out.println();
         }
     }
     
@@ -340,7 +381,6 @@ public class AFN{
     }
     
 
-    //***************************************************
     private class TransicionAFD {
         int estadoOrigen;
         String caracter;

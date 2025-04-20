@@ -37,7 +37,11 @@ public class AFN{
 
 
     }
+    
+    //Verificamos si una cadena es aceptada por el AFD
 
+    //Con este metodo simulamos la ejecucion de automata, sobre la cadena de entrada
+    //Para que sea considerada aceptada, la cadena debe terminar en un estado final despues de reccorerla
     public boolean accept(String string) {
         if(transicionesEstadoAFD == null || transicionesEstadoAFD.length != alfabeto.length){
             toAFD("salida.afd");
@@ -123,9 +127,9 @@ public class AFN{
         Collections.sort(estadosFinalAFD);
 
     }
-
+    //metodo auxiliar para obtener el indice de un simbolo en el alfabeto del automata
     private int getIndiceSimbolo(char simbolo){
-        for(int i = 0; i<alfabeto.length; i++){
+        for(int i = 0; i<alfabeto.length; i++){//recorre todo el arreglo del alfabeto
             if(alfabeto[i].equals(String.valueOf(simbolo))){
                 return i;
             }

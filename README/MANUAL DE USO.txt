@@ -1,0 +1,58 @@
+==================================================
+📘 MANUAL DE USO - PROYECTO NO.2 - INFORMÁTICA 3
+==================================================
+
+🧠 Este programa permite validar cadenas usando un AFN 
+y también transformar dicho AFN a un AFD.
+
+-----------------------------------------------
+🛠️ MODO DE USO
+-----------------------------------------------
+
+1️⃣ VALIDAR CADENAS CON UN ARCHIVO .afn
+-----------------------------------------------
+
+💻 Comando:
+  java AFN path/archivo.afn
+
+📄 Descripción:
+  Este comando inicia el programa en modo de validación.
+  Debes proporcionar la ruta completa del archivo `.afn` que deseas usar.
+
+📲 Una vez iniciado el programa:
+  - Se te pedirá ingresar cuerdas para validar.
+  - Para finalizar, solo presiona ENTER sin escribir nada.
+
+🧪 Ejemplo de uso:
+  java AFN carpeta/archivoAFN.afn
+
+
+2️⃣ CONVERTIR UN ARCHIVO .afn A .afd
+-----------------------------------------------
+
+💻 Comando:
+  java AFN path/archivo.afn -to-afd path/
+
+📄 Descripción:
+  Este comando convierte un archivo `.afn` a su representación como AFD
+  y guarda el resultado en la carpeta especificada.
+
+⚠️ NOTA: El archivo generado `.afd` tendrá el mismo nombre que el archivo `.afn`,
+pero con extensión `.afd`.
+
+🧪 Ejemplo de uso:
+  java AFN automatas/archivoAFN.afn -to-afd salida/
+
+📁 (Este comando creará el archivo: salida/archivoAFN.afd)
+
+-----------------------------------------------
+ CRÉDITOS
+-----------------------------------------------
+
+🧑‍💻 Programa desarrollado por:
+
+  ✨ Adriel Levi Argueta Caal         - 24003171  
+  ✨ Maria Claudia Lainfiesta Herrera - 24000149  
+  ✨ Jeancarlo de León                - 24002596  
+
+===============================================

@@ -1,0 +1,44 @@
+===========================================
+           PROYECTO DE PROGRAMACIÓN
+===========================================
+
+📌 Nombre del proyecto:
+PROYECTO II - AFN
+
+👨‍🏫 Profesor:
+Otto Reynaldo Menendez Ayala
+
+👨‍🎓 Integrantes del equipo:
+~ Adriel Levi Argueta Caal         - 24003171
+~ Maria Claudia Lainfiesta Herrera - 24000149
+~ Jeancarlo de León                - 24002596
+
+📅 Fecha de entrega:
+20-04-2025
+
+
+===========================================
+📝 DESCRIPCIÓN GENERAL DEL PROYECTO
+===========================================
+
+Se realiza la conversion de AFN a AFD con el algoritmo visto en clase y la lectura de cuerdas para la verificacion de ser aceptads o no.
+
+
+===========================================
+📦 ESTRUCTURA DE ARCHIVOS
+===========================================
+
+- AFN.java ................... Programa que realiza la conversionde AFN a AFD y valida cuerdas.
+- MANUAL DE USO.txt .......... Manual detallado del uso del programa.
+- DATOS.txt .................. Información del proyecto.
+
+===========================================
+⚙️ INSTRUCCIONES PARA COMPILAR Y EJECUTAR
+===========================================
+
+1. Compilar todos los archivos:
+> javac *.java
+
+2. Ejecutar el programa:
+> java AFN ....
+(Leer el manual de uso).

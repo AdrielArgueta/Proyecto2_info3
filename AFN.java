@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class AFN{
-    // Lectura AFN.
+    //Variables para Lectura de AFN.
     private String direccionAFN;
     private String[] alfabeto;
     private int cantidadEstadosAFN;
@@ -10,21 +10,28 @@ public class AFN{
     private List<List<Integer>> transicionesLambdaAFN;
     private List<List<List<Integer>>> transicionesEstadosAFN;
 
-    // Algoritmo de clausura-λ.
+    //Variables para Algoritmo de clausura-λ.
     private Queue<Set<Integer>> conjuntoCreadosPendientes;                    
     private Map<Integer, Set<Integer>> mapaClausuras;
     private int contadorEstadosClausuras = 1;
 
-    //Variables resultado AFD.
+    //Variables para resultado de AFD.
     private String direccionAFD;
     private int cantidadEstadosAFD;
     private List<Integer> estadosFinalAFD;
-   
     int cantidadFilasMatrizAFD;
     ArrayList<TransicionAFD>[] transicionesEstadoAFD;
 
-    //Lectura cuerdas.
-
+    /**
+     * Constructor de la clase AFN.
+     *
+     * Descripción:
+     * Inicializa todas las variables necesarias para todos los métodos.
+     *
+     * Parámetros:
+     * @param path - direccion donde se encuentra el AFN.
+     *
+     */
     public AFN(String path){
         this.direccionAFN = path;
         this.transicionesLambdaAFN = new ArrayList<>();
@@ -34,14 +41,23 @@ public class AFN{
         this.mapaClausuras = new HashMap<>();
 
         this.estadosFinalAFD = new ArrayList<>();
-
-
     }
     
-    //Verificamos si una cadena es aceptada por el AFD
+    //********************************** LECTURA CUERDAS AFD/AFN **********************************
 
-    //Con este metodo simulamos la ejecucion de automata, sobre la cadena de entrada
-    //Para que sea considerada aceptada, la cadena debe terminar en un estado final despues de reccorerla
+    /**
+     * Nombre del método: accept
+     *
+     * Descripción: 
+     * Verificamos si una cadena es aceptada por el AFD 
+     * Con este metodo simulamos la ejecucion de automata, sobre la cadena de entrada
+     * Para que sea considerada aceptada, la cadena debe terminar en un estado final despues de reccorerla
+     *
+     * Parámetros:
+     * @param string - cuerda que se quiere verificar.     *
+     * Valor de retorno:
+     * @return boolean - true o false dependiendo de la validación de la cuerda.
+     */
     public boolean accept(String string) {
         if(transicionesEstadoAFD == null || transicionesEstadoAFD.length != alfabeto.length){
             toAFD("salida.afd");
@@ -69,6 +85,38 @@ public class AFN{
         return estadosFinalAFD.contains(estadoActual);
     }
 
+    /**
+     * Nombre del método: getIndiceSimbolo
+     *
+     * Descripción: 
+     * Metodo auxiliar para obtener el indice de un simbolo en el alfabeto del automata
+     *
+     * Parámetros:
+     * @param simbolo - caracter de la cuerda que se esta verificando.
+     *
+     * Valor de retorno:
+     * @return int - indicedel simbolo en el alfabeto.
+     */
+    private int getIndiceSimbolo(char simbolo){
+        for(int i = 0; i<alfabeto.length; i++){
+            if(alfabeto[i].equals(String.valueOf(simbolo))){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    //********************************** CONVERSION AFD **********************************
+
+    /**
+     * Nombre del método: toAFD
+     *
+     * Descripción: 
+     * Se encarga de realizar el algotimos de cambio(Estado,caracter).
+     *
+     * Parámetros:
+     * @param String afdPath - direccion de guardado para afd.
+     */
     public void toAFD(String afdPath){
         this.direccionAFD = afdPath;
         lecturaAFN();
@@ -80,29 +128,19 @@ public class AFN{
             this.transicionesEstadoAFD[i] = new ArrayList<>();
         }
         while (!conjuntoCreadosPendientes.isEmpty()) {
-            //Obtengo conjunto estado clausura lambda
             Set<Integer> cambioEstado = conjuntoCreadosPendientes.poll();
-            //Obtengo el nombre que se le puso a ese conjunto
             int nombreEstadoOrigen = obtenerEstado(cambioEstado);
-
             for (int i = 0; i < alfabeto.length; i++) {
-                //Obtengo el caracter en el indice i del alfabeto
                 String caracterCambio = alfabeto[i];
-                //Creo el set para el conjunto que buscaremos
                 Set<Integer> conjuntoDestino = new HashSet<>();
-                //Hago un for para iterar en cada estado individual del conjunto que se obtuvo de la fila de lambda
                 for (Integer estado : cambioEstado) {
-                    //CReo una lista con las transiciones de la matriz de ese estado.
                     List<Integer> transiciones = transicionesEstadosAFN.get(i).get(estado);
-                    //Voy agregando cada transicion al conjunto destino
                     for (Integer siguiente : transiciones) {
                         conjuntoDestino.add(siguiente);
                     }
                 }
-                //mando a "encolar" el conjunto destino y que tenga su nombre segun lambda
                 clausura_lambda(conjuntoDestino);
                 Integer nombreEstadoDestino = obtenerEstado(conjuntoDestino);
-                //verifico que sea estado final o no.
                 if (nombreEstadoDestino != null) {
                     boolean esEstadoFinal = false;
                     for (Integer estado : conjuntoDestino) {
@@ -111,11 +149,8 @@ public class AFN{
                             break;
                         }
                     }
-                    //creo el objeto
                     TransicionAFD transicionCreada = new TransicionAFD(nombreEstadoOrigen, caracterCambio, nombreEstadoDestino, esEstadoFinal);
-                    //lo agrego a la matriz que tenemos para AFD
                     transicionesEstadoAFD[i].add(transicionCreada);
-                    //agrego el estado si es final al conjunto de estados finales AFD
                     if (esEstadoFinal && !estadosFinalAFD.contains(nombreEstadoDestino)) {
                         estadosFinalAFD.add(nombreEstadoDestino);
                     }
@@ -125,19 +160,14 @@ public class AFN{
         }
         estadosFinales();
         Collections.sort(estadosFinalAFD);
-
-    }
-    //metodo auxiliar para obtener el indice de un simbolo en el alfabeto del automata
-    private int getIndiceSimbolo(char simbolo){
-        for(int i = 0; i<alfabeto.length; i++){//recorre todo el arreglo del alfabeto
-            if(alfabeto[i].equals(String.valueOf(simbolo))){
-                return i;
-            }
-        }
-        return -1;
     }
     
-
+    /**
+     * Nombre del método: lecturaAFN
+     *
+     * Descripción: 
+     * Realiza la lectura del archivo .afn guardando cada linea es su variable corresponciente para su posterior uso.
+     */
     private void lecturaAFN(){
         try(BufferedReader reader = new BufferedReader(new FileReader(direccionAFN))){
             alfabeto = reader.readLine().split(",");
@@ -147,7 +177,6 @@ public class AFN{
             for (int i = 0; i < estadosFinal.length; i++) {
                 estadosFinalAFN[i] = Integer.parseInt(estadosFinal[i].trim());
             }
-
             String[] lambdas = reader.readLine().split(",");
             transicionesLambdaAFN = new ArrayList<>();
             for (String cell : lambdas) {
@@ -159,7 +188,6 @@ public class AFN{
                 }
                 transicionesLambdaAFN.add(transicionLambda);
             }
-
             String line;
             transicionesEstadosAFN = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
@@ -181,6 +209,16 @@ public class AFN{
         }
     }
 
+    /**
+     * Nombre del método: clausura_lambda
+     *
+     * Descripción: 
+     * Realiza el algoritmo de clausura lambda a cada conjunto de estado enviado.
+     *
+     * Parámetros:
+     * @param conjuntoActual - conjunto de estado que se desea obtener su clausura lambda.
+     *
+     */
 
     public void clausura_lambda(Set<Integer> conjuntoActual){
         Set<Integer> conjuntoNuevo = new LinkedHashSet<>(conjuntoActual);
@@ -214,6 +252,18 @@ public class AFN{
         
     }
 
+    /**
+     * Nombre del método: obtenerEstado
+     *
+     * Descripción: 
+     * Se busca dentro del mapa de clausura de lambda el nombre que se le fue asignado.
+     *
+     * Parámetros:
+     * @param conjuntoABuscar - conjutno de estado que deseas obtener su nombre en el mapa de clausura de lambda.
+     *
+     * Valor de retorno:
+     * @return Integer - nombre asignado en el metodo claurua_lambda.
+     */
     public Integer obtenerEstado(Set<Integer> conjuntoABuscar) {
         for (Map.Entry<Integer, Set<Integer>> entry : mapaClausuras.entrySet()) {
             if (entry.getValue().equals(conjuntoABuscar)) {
@@ -222,7 +272,18 @@ public class AFN{
         }
         return null;
     }
-        
+    
+    /**
+     * Nombre del método: escribirAFD
+     *
+     * Descripción: 
+     * Genera el archivo .afd con todos los datos que se solicitan en el proyecto.
+     *
+     * Parámetros:
+     * @param nombreArchivo - el nombre que tendra el archivo .afd.
+     * @param path - donde se guardara el archivo .afd.
+     * 
+     */
     public void escribirAFD(String nombreArchivo, String path) {
         if (!nombreArchivo.endsWith(".afd")) {
             nombreArchivo += ".afd";
@@ -230,15 +291,10 @@ public class AFN{
     
         File archivo = new File(path + File.separator + nombreArchivo);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
-            // Línea 1: alfabeto
             writer.write(String.join(",", alfabeto));
             writer.newLine();
-    
-            // Línea 2: cantidad de estados
             writer.write(String.valueOf(mapaClausuras.size()));
             writer.newLine();
-    
-            // Línea 3: estados finales del AFD
             for (int i = 0; i < estadosFinalAFD.size(); i++) {
                 writer.write(String.valueOf(estadosFinalAFD.get(i)));
                 if (i < estadosFinalAFD.size() - 1) {
@@ -246,8 +302,6 @@ public class AFN{
                 }
             }
             writer.newLine();
-    
-            // Matriz de transiciones: filas = símbolos, columnas = estados
             int maxEstado = mapaClausuras.keySet().stream().max(Integer::compareTo).orElse(0);
             for (int i = 0; i < alfabeto.length; i++) {
                 StringBuilder fila = new StringBuilder();
@@ -270,7 +324,6 @@ public class AFN{
                 writer.write(fila.toString());
                 writer.newLine();
             }
-    
             System.out.println("AFD exportado correctamente en: ");
             System.out.println(archivo.getAbsolutePath());
     
@@ -278,6 +331,72 @@ public class AFN{
             System.out.println("Error al escribir AFD en archivo: " + e.getMessage());
         }
     }
+
+    /**
+     * Nombre del método: estadosFInales
+     *
+     * Descripción: 
+     * Verifica que conjuntos de claurura de lambda son estados finales y hace una copia de los nombres para la impresion posterior.
+     * 
+     */
+    private void estadosFinales() {
+        for (Map.Entry<Integer, Set<Integer>> entry : mapaClausuras.entrySet()) {
+            Set<Integer> conjunto = entry.getValue();
+            for (int finalAFN : estadosFinalAFN) {
+                if (conjunto.contains(finalAFN)) {
+                    estadosFinalAFD.add(entry.getKey());
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Nombre de la clase: TransicionAFD
+     *
+     * Descripción: 
+     * Representa cada transicion nueva hecha por el algoritmo completo.
+     * 
+     */
+    private class TransicionAFD {
+        int estadoOrigen;
+        String caracter;
+        int estadoDestino;
+        boolean finalOno;
+
+        public TransicionAFD(int origen, String caracter, int destino, boolean finalOno) {
+            this.estadoOrigen = origen;
+            this.caracter = caracter;
+            this.estadoDestino = destino;
+            this.finalOno = finalOno;
+        }
+        public int getEstadoOrigen(){
+            return this.estadoOrigen;
+        }
+        public int getEstadoDestino(){
+            return this.estadoDestino;
+        }
+        public String getCaracter(){
+            return this.caracter;
+        }
+        public boolean getFinaloNo(){
+            return this.finalOno;
+        }
+
+    }
+
+    //********************************** MAIN **********************************
+
+    /**
+     * Nombre del método: main
+     *
+     * Descripción: 
+     * Metodo principal que se ejecutara segun lo que necesite el usuario.
+     *
+     * Parámetros:
+     * @param args - arreglo de argumentos que se leen en la linea de ejecución.
+     *
+     */
     public static void main(String[] args) throws IOException {
         if (args.length == 1) {
             AFN automata = new AFN(args[0]);
@@ -369,47 +488,5 @@ public class AFN{
             System.out.println();
         }
     }
-    
-    
-    
-    private void estadosFinales() {
-        for (Map.Entry<Integer, Set<Integer>> entry : mapaClausuras.entrySet()) {
-            Set<Integer> conjunto = entry.getValue();
-            for (int finalAFN : estadosFinalAFN) {
-                if (conjunto.contains(finalAFN)) {
-                    estadosFinalAFD.add(entry.getKey());
-                    break;
-                }
-            }
-        }
-    }
-    
-
-    private class TransicionAFD {
-        int estadoOrigen;
-        String caracter;
-        int estadoDestino;
-        boolean finalOno;
-
-        public TransicionAFD(int origen, String caracter, int destino, boolean finalOno) {
-            this.estadoOrigen = origen;
-            this.caracter = caracter;
-            this.estadoDestino = destino;
-            this.finalOno = finalOno;
-        }
-        public int getEstadoOrigen(){
-            return this.estadoOrigen;
-        }
-        public int getEstadoDestino(){
-            return this.estadoDestino;
-        }
-        public String getCaracter(){
-            return this.caracter;
-        }
-        public boolean getFinaloNo(){
-            return this.finalOno;
-        }
-
-    }
-    
+        
 }
